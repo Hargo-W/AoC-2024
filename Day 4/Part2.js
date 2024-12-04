@@ -148,32 +148,27 @@ for (let i = 0; i < grid.length; i++) {
     grid[i].push('.');
 }
 
-const directions = [[-1, 0], [1, 0], [0, -1], [0, 1], [-1, -1], [-1, 1], [1, -1], [1, 1]]
-
-const charArrayOfWordToMatch = ['X', 'M', 'A', 'S']
-
 let count = 0;
 
-const checkInDirection = (y, x, direction) => {
-    for (let i = 0; i < charArrayOfWordToMatch.length; i++) {
-        const letterToCheckFor = charArrayOfWordToMatch[i]
-        if (grid[y][x] !== letterToCheckFor) return false
-        y += direction[0]
-        x +=direction[1]
-    }
-    return true
+const diagonalMatches = (letter1, letter2) => {
+    if (letter1 === 'M' && letter2 === 'S') return true
+    if (letter1 === 'S' && letter2 === 'M') return true
+    return false
 }
 
-const checkInAllDirections = (y, x) => {
-    directions.forEach((direction) => {
-        if (checkInDirection(y, x, direction)) count++
-    })
+const isXmas = (y, x) => {
+    const topLeftLetter = grid[y - 1][x - 1]
+    const topRightLetter = grid[y - 1][x + 1]
+    const bottomLeftLetter = grid[y + 1][x - 1]
+    const bottomRightLetter = grid[y + 1][x + 1]
+
+    return diagonalMatches(topLeftLetter, bottomRightLetter) && diagonalMatches(topRightLetter, bottomLeftLetter);
 }
 
 for (let i = 0; i < grid.length; i++) {
     for (let y = 0; y < grid[0].length; y++) {
-        if (grid[i][y] !== charArrayOfWordToMatch[0]) continue
-        checkInAllDirections(i, y)
+        if (grid[i][y] !== 'A') continue
+        if (isXmas(i, y)) count++
     }
 }
 
