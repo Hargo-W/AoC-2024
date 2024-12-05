@@ -1,3 +1,5 @@
+import {pad2dArray, stringTo2dArray} from "../sharedFunctions.js";
+
 const input = `SAXMASMMMASAMMMMXXMMXMMMSSMMMXSAAXMSSMSSSSSSSSXSASXMSMMMSASXSXMASXMSSSMXSSMXSMSSXMXXSXMXAMXMASXASXMSAMSSSMMAAXAMMXXSAMMSXSSSSMSMMSMSAXSAMXMX
 MXXAAMAAMAMASXSSSMMSAMMSAMASMMSXSAMXAAMAAAAAAXSXAMMMAMAAXAMMAXXAXAAAXMAMMAMAMMAMXMAXSASXSAMXAXMSMAMMAAXSAMXSSXMMMAMMASAMXAAAXAAAXAAMAMXAMXAM
 XSXMASXMMXSAMXAAXMASASMMXXAMAXXAMXXSMMMMMMMMMMXMXMAMASASMMMAMMMMXMMMMSAMSAMAXMAMAMMXSAMXMMXMASXAMXMSMMMSMXMXAXSAMSXSAMASMMMMMSMSMMSMAMSXMASA
@@ -139,14 +141,7 @@ AXAAAMAASMSASXSMAMAMAASXSMMSASAMXSAXAMMSMMMMMAXMAMAMMMAMAMMMASMSMSSMSSMAMSSSMASX
 MMMMSMXXSAAAAAXXASASXXMAMAASXMASMMMMSMAAAASASMMSASASMSSMASXMAMAAXMASAXMAMXAASAMXAXAAAMSSSMAXXSXMSMMSSMXAAMAMXSXSXAMSSSSMASAXAMAXAAAAAAAMSAAA
 XXXXMAMXMAMSMAMSXSMSXMMAMMMMXXMAMAXXXMSSSMSMSXMSASMSMXMAXSAMMSSMSSMMSSSMSMSMMSAMXMSMSMMAASXSAMXMXXMAXXSMSMSMMXXSMSXXAMXMASASMSSSSSMMSSMXAXSS`
 
-const grid = input.split('\n').map(line => line.split(''))
-
-grid.unshift(Array(grid[0].length).fill('.'));
-grid.push(Array(grid[0].length).fill('.'));
-for (let i = 0; i < grid.length; i++) {
-    grid[i].unshift('.');
-    grid[i].push('.');
-}
+const grid = pad2dArray(stringTo2dArray(input), '.')
 
 const directions = [[-1, 0], [1, 0], [0, -1], [0, 1], [-1, -1], [-1, 1], [1, -1], [1, 1]]
 
@@ -170,10 +165,10 @@ const checkInAllDirections = (y, x) => {
     })
 }
 
-for (let i = 0; i < grid.length; i++) {
-    for (let y = 0; y < grid[0].length; y++) {
-        if (grid[i][y] !== charArrayOfWordToMatch[0]) continue
-        checkInAllDirections(i, y)
+for (let y = 0; y < grid.length; y++) {
+    for (let x = 0; x < grid[0].length; x++) {
+        if (grid[y][x] !== charArrayOfWordToMatch[0]) continue
+        checkInAllDirections(y, x)
     }
 }
 
