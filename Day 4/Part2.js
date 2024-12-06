@@ -143,7 +143,7 @@ XXXXMAMXMAMSMAMSXSMSXMMAMMMMXXMAMAXXXMSSSMSMSXMSASMSMXMAXSAMMSSMSSMMSSSMSMSMMSAM
 
 const grid = pad2dArray(stringTo2dArray(input), '.')
 
-let count = 0;
+let count = 0
 
 const diagonalMatches = (letter1, letter2) => {
     if (letter1 === 'M' && letter2 === 'S') return true
@@ -157,7 +157,7 @@ const isXmas = (y, x) => {
     const bottomLeftLetter = grid[y + 1][x - 1]
     const bottomRightLetter = grid[y + 1][x + 1]
 
-    return diagonalMatches(topLeftLetter, bottomRightLetter) && diagonalMatches(topRightLetter, bottomLeftLetter);
+    return diagonalMatches(topLeftLetter, bottomRightLetter) && diagonalMatches(topRightLetter, bottomLeftLetter)
 }
 
 for (let y = 0; y < grid.length; y++) {

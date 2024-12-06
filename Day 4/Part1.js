@@ -147,7 +147,7 @@ const directions = [[-1, 0], [1, 0], [0, -1], [0, 1], [-1, -1], [-1, 1], [1, -1]
 
 const charArrayOfWordToMatch = ['X', 'M', 'A', 'S']
 
-let count = 0;
+let count = 0
 
 const checkInDirection = (y, x, direction) => {
     for (let i = 0; i < charArrayOfWordToMatch.length; i++) {

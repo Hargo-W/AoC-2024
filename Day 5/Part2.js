@@ -1413,7 +1413,7 @@ const reorderSequence = (sequence) => {
     return sequence
 }
 
-let result = 0;
+let result = 0
 
 instructions.forEach((sequence) => {
     if (!isValidSequence(sequence)) {

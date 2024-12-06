@@ -136,7 +136,7 @@ const grid = pad2dArray(stringTo2dArray(input), boundsMarker)
 
 const getStartingCoords = (map) => {
     for (let y = 0; y < map.length; y++) {
-        for (let x = 0; x < map.length; x++) {
+        for (let x = 0; x < map[0].length; x++) {
             if (map[y][x] === '^') return [y, x]
         }
     }
@@ -145,32 +145,53 @@ const getStartingCoords = (map) => {
 // up, right, down, left
 const directions = [[-1, 0], [0, 1], [1, 0], [0, -1]]
 
-const isBlocked = (location, direction) => {
+const isBlocked = (location, direction, map) => {
     const newY = location[0] + direction[0]
     const newX = location[1] + direction[1]
-    return grid[newY][newX] === '#'
+    return map[newY][newX] === '#'
 }
 
-const changeDirection = (currentDirection) => {
+const rotateClockwise = (currentDirection) => {
     const indexOfDirection = directions.indexOf(currentDirection)
-    const indexOfNewDirection = indexOfDirection + 1 > directions.length - 1 ? 0 : indexOfDirection + 1
+    const indexOfNewDirection = indexOfDirection + 1 === directions.length ? 0 : indexOfDirection + 1
     return directions[indexOfNewDirection]
 }
 
-const markedX = new Set
+let count = 0
 
-const takeStep = (location, direction) => {
-    if (grid[location[0]][location[1]] === boundsMarker) return
+const walkRoute = (map, location, direction, previousPath) => {
+    while (true) {
+        if (map[location[0]][location[1]] === boundsMarker) return
 
-    if (isBlocked(location, direction)) direction = changeDirection(direction)
+        for (let i = 0; i < 3; i++) {
+            if (isBlocked(location, direction, map)) {
+                direction = rotateClockwise(direction)
+            }
+        }
 
-    markedX.add(location.toString())
+        const path = location.toString() + '->' + direction.toString()
 
-    location = [location[0] + direction[0], location[1] + direction[1]]
+        if (previousPath.has(path)) {
+            count++
+            return
+        } else {
+            previousPath.add(path)
+        }
 
-    takeStep(location, direction)
+        location = [location[0] + direction[0], location[1] + direction[1]]
+    }
 }
 
-takeStep(getStartingCoords(grid), directions[0])
+const startingCoords = getStartingCoords(grid)
 
-console.log(markedX.size)
+for (let y = 0; y < grid.length; y++) {
+    for (let x = 0; x < grid[0].length; x++) {
+        if (grid[y][x] !== '.') continue
+
+        const tempNewGrid = grid.map(row => [...row])
+        tempNewGrid[y][x] = '#'
+        walkRoute(tempNewGrid, startingCoords, directions[0], new Set)
+    }
+}
+
+console.log(count)
