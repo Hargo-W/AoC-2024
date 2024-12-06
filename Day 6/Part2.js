@@ -162,12 +162,8 @@ let count = 0
 const walkRoute = (map, location, direction, previousPath) => {
     while (true) {
         if (map[location[0]][location[1]] === boundsMarker) return
-
-        for (let i = 0; i < 3; i++) {
-            if (isBlocked(location, direction, map)) {
-                direction = rotateClockwise(direction)
-            }
-        }
+        
+        while (isBlocked(location, direction, map)) direction = rotateClockwise(direction)
 
         const path = location.toString() + '->' + direction.toString()
 
@@ -188,9 +184,9 @@ for (let y = 0; y < grid.length; y++) {
     for (let x = 0; x < grid[0].length; x++) {
         if (grid[y][x] !== '.') continue
 
-        const tempNewGrid = grid.map(row => [...row])
-        tempNewGrid[y][x] = '#'
-        walkRoute(tempNewGrid, startingCoords, directions[0], new Set)
+        const tempGrid = grid.map(row => [...row])
+        tempGrid[y][x] = '#'
+        walkRoute(tempGrid, startingCoords, directions[0], new Set)
     }
 }
 
