@@ -11,3 +11,7 @@ export const pad2dArray = (grid, padChar) => {
     }
     return grid
 }
+
+export const isEven = (n) => {
+    return n % 2 === 0;
+}
