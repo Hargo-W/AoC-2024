@@ -136,7 +136,7 @@ const grid = pad2dArray(stringTo2dArray(input), boundsMarker)
 
 const getStartingCoords = (map) => {
     for (let y = 0; y < map.length; y++) {
-        for (let x = 0; x < map.length; x++) {
+        for (let x = 0; x < map[0].length; x++) {
             if (map[y][x] === '^') return [y, x]
         }
     }
