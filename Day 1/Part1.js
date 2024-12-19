@@ -1001,8 +1001,8 @@ const input = `47078   87818
 
 const lines = input.split('\n')
 
-let list1 = []
-let list2 = []
+const list1 = []
+const list2 = []
 
 lines.forEach((line) => {
     const [val1, val2] = line.split('   ')
@@ -1015,8 +1015,8 @@ list2.sort()
 
 let result = 0
 
-for (let i=0; i < list1.length; i++) {
-    result += Math.abs(list1[i] - list2[i])
-}
+list1.forEach( (num, index) => {
+    result += Math.abs(num - list2[index])
+})
 
 console.log(result)

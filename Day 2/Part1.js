@@ -1001,21 +1001,13 @@ const input = `40 42 45 46 49 47
 
 const reports = input.split('\n')
 
-const allIncreasing = (levels) => {
-    for (let i = 0; i < levels.length - 1; i++) {
-        if (levels[i] >= levels[i + 1]) {
-            return false
-        }
-    }
-    return true
-}
+const allIncreasing = (levels) =>
+    levels.every((level, index) =>
+        index === levels.length - 1 || level <= levels[index + 1])
 
-const allDecreasing = (levels) => {
-    for (let i = 0; i < levels.length - 1; i++) {
-        if (levels[i] <= levels[i + 1]) return false
-    }
-    return true
-}
+const allDecreasing = (levels) =>
+    levels.every((level, index) =>
+        index === levels.length - 1 || level >= levels[index + 1])
 
 const allSafeDistance = (levels) => {
     for (let i = 0; i < levels.length - 1; i++) {
@@ -1026,7 +1018,7 @@ const allSafeDistance = (levels) => {
 }
 
 const isSafe = (report) => {
-    const levels = report.split(' ').map( char => Number(char))
+    const levels = report.split(' ').map(Number)
     if (!allIncreasing(levels) && !allDecreasing(levels)) return false
     if (!allSafeDistance(levels)) return false
     return true

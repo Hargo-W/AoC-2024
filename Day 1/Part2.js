@@ -1001,8 +1001,8 @@ const input = `47078   87818
 
 const lines = input.split('\n')
 
-let list1 = []
-let list2 = []
+const list1 = []
+const list2 = []
 
 lines.forEach((line) => {
     const [val1, val2] = line.split('   ')
