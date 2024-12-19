@@ -74,12 +74,30 @@ vvv><<^^<^>><^^^v^>v^>^v<v>>v<<<>>^<<>><vv<<<v^>^v><<<^<>>>>>^v<v><>><>^>>>>>>v<
 
 const [rawMap, rawInstructions] = input.split('\n\n')
 
-const map = stringTo2dArray(rawMap)
-const instructions = rawInstructions.split('').filter(instruction => instruction !== `\n`)
-
 const robot = '@'
-const box = 'O'
+const oldBox = 'O'
 const freeSpace = '.'
+const wall = '#'
+const boxL = '['
+const boxR = ']'
+
+const widenMap = (originalMap) => {
+    const wideMap = []
+    for (let y = 0; y < originalMap.length; y++) {
+        wideMap.push([])
+        for (let x = 0; x < originalMap[0].length; x++) {
+            const referenceTile = originalMap[y][x]
+            if (referenceTile === wall) wideMap[y].push(wall, wall)
+            else if (referenceTile === oldBox) wideMap[y].push(boxL, boxR)
+            else if (referenceTile === freeSpace) wideMap[y].push(freeSpace, freeSpace)
+            else if (referenceTile === robot) wideMap[y].push(robot, freeSpace)
+        }
+    }
+    return wideMap
+}
+
+let map = widenMap(stringTo2dArray(rawMap))
+const instructions = rawInstructions.split('').filter(instruction => instruction !== `\n`)
 
 const getRobotPosition = () => {
     for (let y = 0; y < map.length; y++) {
@@ -105,12 +123,47 @@ const move = (oldCoords, newCoords) => {
     map[oldCoords[0]][oldCoords[1]] = freeSpace
 }
 
-const attemptToMoveBox = (boxCoords, direction) => {
-    const coordsToMoveTo = getNewCoords(boxCoords, direction)
-    let tileToMoveTo = map[coordsToMoveTo[0]][coordsToMoveTo[1]]
-    if (tileToMoveTo === box) attemptToMoveBox(coordsToMoveTo, direction)
-    tileToMoveTo = map[coordsToMoveTo[0]][coordsToMoveTo[1]]
-    if (tileToMoveTo === freeSpace) move(boxCoords, coordsToMoveTo)
+const isBox = (tile) => {
+    return tile === boxL || tile === boxR
+}
+
+const attemptToMoveBox = (sideCoords, direction, side) => {
+    if (direction === '^' || direction === 'v') {
+        const boxCoords = {}
+        if (side === boxL) {
+            boxCoords[boxL] = sideCoords
+            boxCoords[boxR] = [sideCoords[0], sideCoords[1] + 1]
+        } else {
+            boxCoords[boxL] = [sideCoords[0], sideCoords[1] - 1]
+            boxCoords[boxR] = sideCoords
+        }
+
+        const nextCoordsL = getNewCoords(boxCoords[boxL], direction)
+        let nextTileL = map[nextCoordsL[0]][nextCoordsL[1]]
+        if (isBox(nextTileL)) attemptToMoveBox(nextCoordsL, direction, nextTileL)
+
+        const nextCoordsR = getNewCoords(boxCoords[boxR], direction)
+        let nextTileR = map[nextCoordsR[0]][nextCoordsR[1]]
+        if (isBox(nextTileR)) attemptToMoveBox(nextCoordsR, direction, nextTileR)
+
+        nextTileL = map[nextCoordsL[0]][nextCoordsL[1]]
+        nextTileR = map[nextCoordsR[0]][nextCoordsR[1]]
+
+        if (nextTileL === freeSpace && nextTileR === freeSpace) {
+            move(boxCoords[boxL], nextCoordsL)
+            move(boxCoords[boxR], nextCoordsR)
+        }
+    } else {
+        const otherSideCoords = getNewCoords(sideCoords, direction)
+        const nextCoords = getNewCoords(otherSideCoords, direction)
+        let nextTile = map[nextCoords[0]][nextCoords[1]]
+        if (nextTile === boxL || nextTile === boxR) attemptToMoveBox(nextCoords, direction, nextTile)
+        nextTile = map[nextCoords[0]][nextCoords[1]]
+        if (nextTile === freeSpace) {
+            move(otherSideCoords, nextCoords)
+            move(sideCoords, otherSideCoords)
+        }
+    }
 }
 
 const followInstruction = (instruction) => {
@@ -119,23 +172,24 @@ const followInstruction = (instruction) => {
     const newTile = map[newCoords[0]][newCoords[1]]
     if (newTile === freeSpace) {
         move(position, newCoords)
-    } else if (newTile === box) {
-        attemptToMoveBox(newCoords, instruction)
+    } else if (newTile === boxL || newTile === boxR) {
+        const backupMap = map.map(row => [...row])
+        attemptToMoveBox(newCoords, instruction, newTile)
         const isFreeNow = map[newCoords[0]][newCoords[1]] === freeSpace
         if (isFreeNow) move(position, newCoords)
+        else map = backupMap
     }
 }
 
 instructions.forEach(instruction => {
     followInstruction(instruction)
-    // console.log(map.map(line => line.join()))
 })
 
 const getSumOfGps = () => {
     const coords = []
     for (let y = 0; y < map.length; y++) {
         for (let x = 0; x < map[0].length; x++) {
-            if (map[y][x] === box) {
+            if (map[y][x] === boxL) {
                 coords.push([y, x])
             }
         }
