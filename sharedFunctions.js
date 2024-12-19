@@ -15,3 +15,13 @@ export const pad2dArray = (grid, padChar) => {
 export const isEven = (n) => {
     return n % 2 === 0;
 }
+
+export const getCharCoords = (char, grid) => {
+    for (let y = 0; y < grid.length; y++) {
+        for (let x = 0; x < grid[0].length; x++) {
+            if (grid[y][x] === char) {
+                return [y, x]
+            }
+        }
+    }
+}

@@ -1,4 +1,4 @@
-import {stringTo2dArray} from "../sharedFunctions.js";
+import {getCharCoords, stringTo2dArray} from "../sharedFunctions.js";
 
 const input = `##################################################
 ##...OO.O.#.O..........OO..#.#..O.O.O.....O......#
@@ -81,16 +81,6 @@ const robot = '@'
 const box = 'O'
 const freeSpace = '.'
 
-const getRobotPosition = () => {
-    for (let y = 0; y < map.length; y++) {
-        for (let x = 0; x < map[0].length; x++) {
-            if (map[y][x] === robot) {
-                return [y, x]
-            }
-        }
-    }
-}
-
 const getNewCoords = (coords, instruction) => {
     let newCoords
     if (instruction === '^') newCoords = [coords[0] - 1, coords[1]]
@@ -114,7 +104,7 @@ const attemptToMoveBox = (boxCoords, direction) => {
 }
 
 const followInstruction = (instruction) => {
-    const position = getRobotPosition()
+    const position = getCharCoords(robot, map)
     const newCoords = getNewCoords(position, instruction)
     const newTile = map[newCoords[0]][newCoords[1]]
     if (newTile === freeSpace) {

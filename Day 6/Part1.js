@@ -1,4 +1,4 @@
-import {pad2dArray, stringTo2dArray} from "../sharedFunctions.js";
+import {getCharCoords, pad2dArray, stringTo2dArray} from "../sharedFunctions.js";
 
 const input = `....#...................................#...............#.................#.......#...#...........................................
 .........................#.........#....................................#...........................#......##..............##...#.
@@ -134,14 +134,6 @@ const input = `....#...................................#...............#........
 const boundsMarker = '@'
 const grid = pad2dArray(stringTo2dArray(input), boundsMarker)
 
-const getStartingCoords = (map) => {
-    for (let y = 0; y < map.length; y++) {
-        for (let x = 0; x < map[0].length; x++) {
-            if (map[y][x] === '^') return [y, x]
-        }
-    }
-}
-
 // up, right, down, left
 const directions = [[-1, 0], [0, 1], [1, 0], [0, -1]]
 
@@ -171,6 +163,6 @@ const takeStep = (location, direction) => {
     takeStep(location, direction)
 }
 
-takeStep(getStartingCoords(grid), directions[0])
+takeStep(getCharCoords('^', grid), directions[0])
 
 console.log(markedX.size)
